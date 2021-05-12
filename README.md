@@ -125,10 +125,10 @@ The combination of those two factors should model the temporal characteristics o
 ### Landscape Factor L
 
 ```js
-L = 1 + sqrt(SfB8 / DNmax))
+L = 1 + (Sf_B8 / DNmax).sqrt()
 ```
 
-Where `SfB8` is the result of a convolution using a 3x3 anisotropic edge detection Sobel filter on Sentinel-2’s NIR band (`B8`). 
+Where `Sf_B8` is the result of a convolution using a 3x3 anisotropic edge detection Sobel filter on Sentinel-2’s NIR band (`B8`). 
 The convolution output is normalized by dividing by the maximum potential reflectance value of the B8 band, which in the case of Sentine-2 L2A on GEE is 10000. 
 It is a doing a good job at identifying linear (boundaries, terraces) and punctual (trees/bushes in field) features, even on 10m imagery.
 
