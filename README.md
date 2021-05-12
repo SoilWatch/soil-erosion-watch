@@ -98,8 +98,8 @@ this [blog post]() can be consulted.
 ### Vegetation Factor V
 
 ```js
-var Vm = exp(10 * (1 – BSf) * FCover_m)
-var V = Vm.mean();
+var Vm = (10 * (1 – BSf) * FCover_m).exp()
+var V = Vm.mean()
 ```
 
 [Wischmeier & Smith 1978](https://naldc.nal.usda.gov/download/CAT79706928/PDF) established from experimental data that 
