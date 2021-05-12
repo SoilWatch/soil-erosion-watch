@@ -611,6 +611,7 @@ var bs_options = {title: 'Bare Soil Frequency (BSf) Distribution - Kenya Jan-Dec
               hAxis: {title: '% of bare soil occurence'},
               vAxis: {title: 'surface area (hectares)'},
               legend: {position: 'none'},
+              pointSize: 10,
               colors: ["#420a68", "#530e6c", "#63136e", "#731a6e", "#83206b", "#932567", "#a42b61",
                        "#b43359", "#c33b4f", "#d04545", "#dd5039", "#e85e2d", "#f06e21", "#f77f13",
                        "#fa9207", "#fca40b", "#fcb91d", "#f9cc35", "#f5e155"]
