@@ -397,7 +397,7 @@ function renderDateRange(date_range){
 
       // The input images required to generate the charts from drawn geometries
       var input_image = slope_rad.tan().multiply(100)
-                        .addBands(bs_freq)
+                        .addBands(bs_freq.multiply(100))
                         .addBands(A)
                         .updateMask(bs_freq.gt(0));
       var red_outputs = drawingTools.drawPlot(input_image, plot_series, aoi, year);
@@ -685,7 +685,7 @@ function chartDefaultTimeSeries(){
 
   // The input images required to generate the charts from drawn geometries
   var input_image = slope_rad.tan().multiply(100)
-                    .addBands(bs_freq)
+                    .addBands(bs_freq.multiply(100))
                     .addBands(A)
                     .updateMask(bs_freq.gt(0));
   var red_outputs = drawingTools.drawPlot(input_image, plot_series, aoi, '2020');
