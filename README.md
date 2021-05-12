@@ -281,16 +281,16 @@ Last but not least, the highest covariates included in this soil erosion modelli
     ```
   - Median composite of non-bare soil pixels with NDVI > 0.25.
     ```js
-    var kenya_green_2020 = ee.Image('users/soilwatch/KenyaGreenComposite2020');
+    var kenya_median_2020 = ee.Image('users/WilliamOuellette/KenyaMedianComposite2020');
     ```
 
 ## Other Credits
 
 Other invaluable resources used to piece this App together are many, but find here the main ones:
-- [Justin Braaten](https://github.com/jdbcode) 's repositories and contributions to GEE's 
+- [@jdbcode](https://github.com/jdbcode)'s repositories and contributions to GEE's 
   [community content](https://developers.google.com/earth-engine/tutorials).
   
-- Samapriya Roy's [awesome-gee-community-dataset](https://github.com/samapriya/awesome-gee-community-datasets), 
+- [@Samapriya](https://github.com/samapriya)'s [awesome-gee-community-dataset](https://github.com/samapriya/awesome-gee-community-datasets), 
   which was used to access existing datasets (Facebook HSRL layer), but also to reference new datasets like HiHydroSoil v2.0.
   
 - Pasquale Borrelli's RUSLE-based global erosion modelling efforts, as illustrated by this paper:
@@ -303,7 +303,7 @@ Other invaluable resources used to piece this App together are many, but find he
 - [Kibret et al., 2020](https://www.tandfonline.com/doi/full/10.1080/22797254.2020.1786466) 's GEE workflow was a great inspiration for 
   the implementation of the harmonic regression to Sentinel-2 data to provide smooth and gapless time series plots.
   
-- Kristof van Tricht's (@kristofvt) contribution of the sentinelhub custom-script for FCover, which was for the Google Earth Engine in this repository.
+- [@kristofvt](https://github.com/kristofvt)'s contribution of the [sentinelhub custom-script for FCover](https://github.com/sentinel-hub/custom-scripts/tree/master/sentinel-2/fcover), which was adapted for the Google Earth Engine in this repository.
   
 - The [GEE App](https://www.earthengine.app/) service, allowing the crunching of GBs in minutes to deliverable valuable, 
   domain-specific insight in the hands of many.
