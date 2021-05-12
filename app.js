@@ -211,8 +211,12 @@ function _getPeriods(period){
 // Add Button Widget to finalize drop-down menu selections.
 var add = ui.Button('Display Area of Interest');
 
+var blog_label = ui.Label({value: '❓ Medium ️Blog Post️', style: {fontWeight: 'bold'}})
+.setUrl('https://medium.com/@soilwatch/soil-erosion-watch-a-bootstrapped-approach-to-identify-the-worlds-degrading-soils-45babd656fee');
+
 // Add all buttons to the panel
-var panel = ui.Panel([statesDD,
+var panel = ui.Panel([blog_label,
+                      statesDD,
                       countiesDD,
                       subcountiesDD,
                       periodTypeDD,
@@ -234,7 +238,8 @@ var title_label = ui.Label({
     margin: '0 0 4px 0',
     padding: '2'
     }
-});
+}).setUrl('https://github.com/SoilWatch/soil-erosion-watch');
+
 Map.add(title_label);
 
 // Triggers the retrieval of area-based information based on the selection in the button widgets
@@ -537,7 +542,7 @@ bs_freq = bs_freq.updateMask(bs_freq_mask);
 // This allows the display of an entire country like Kenya without having to compute the data on-the-fly
 var bs_image = ee.Image('users/soilwatch/KenyaBareSoilComposite2020');
 bs_image = bs_image.updateMask(bs_freq_mask);
-var median_image = ee.Image('users/WilliamOuellette/Kenya_greencomposite');
+var median_image = ee.Image('users/WilliamOuellette/KenyaMedianComposite2020');
 var fcover_ts_smooth = ee.ImageCollection("users/soilwatch/KenyaFcover2020");
 
 // Compute the sustainability factor S = 1 / (V * L)
@@ -706,7 +711,7 @@ function chartDefaultTimeSeries(){
 
 // Stashing GUI Buttons to carry over when onClick event occurs
 var elems = panel.widgets();
-var button_widgets = [elems.get(0), elems.get(1), elems.get(2), elems.get(3), elems.get(4), elems.get(5), elems.get(6)];
+var button_widgets = [elems.get(0), elems.get(1), elems.get(2), elems.get(3), elems.get(4), elems.get(5), elems.get(6), elems.get(7)];
 
 // Stashing Disclaimer Labels to carry over when onClick event occurs
-var disclaimer_widgets = [elems.get(12), elems.get(13)];
+var disclaimer_widgets = [elems.get(13), elems.get(14)];
