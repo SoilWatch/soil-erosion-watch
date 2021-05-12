@@ -3,21 +3,24 @@
 
 _**RUSLE**: Revised Universal Soil Loss Equation, a well established empirical modelling method to estimate annual soil loss._
 
-![](images/TanaWatershedSoilErosionKenya.jpg)
+<img src="https://user-images.githubusercontent.com/84096586/118025387-c7af8080-b32d-11eb-9ee7-d83983054960.jpg" width="750">
 
 _**hedgerow**: Line of closely spaced grasses, shrubs or trees, planted and trained to form a barrier or 
 to mark the boundary of an area, or to prevent soil erosion from wind and water._
 
-![](images/grassHedgerowNapier.jpg)
+<img src="https://user-images.githubusercontent.com/84096586/118025978-53c1a800-b32e-11eb-8098-191d132c2a00.jpg" width="750">
 
 _For the [Google Earth Engine](https://earthengine.google.com/) JavaScript Code Editor_
 
-An Earth Engine JavaScript App Code to compute the Revised Universal Soil Erosion Equation (RUSLE),
+A Google Earth Engine JavaScript App Source Code to compute the Revised Universal Soil Erosion Equation (RUSLE),
 for any location in the world. 
 The app is published and can be accessed [here](https://soilwatch.users.earthengine.app/view/soilerosionwatch).
+All methods are public and can be imported with the following syntax: 
+```js
+var <method_name> = require('users/soilwatch/soilErosionApp:<script_name>')
+```
 
 ![](images/SoilErosionWatch.gif)
-
 
 ## Concept
 
@@ -138,20 +141,20 @@ It is a doing a good job at identifying linear (boundaries, terraces) and punctu
 This App provides the following layers at 10m resolution (native Sentinel-2 resolution):
 - Spatially-explicit Annual Soil Erosion Rates derived from RUSLE.
   
-  ![](images/AnnualSoilLossRateKenya.png)
+  <img src="https://user-images.githubusercontent.com/84096586/118026313-abf8aa00-b32e-11eb-8f6a-d2454c27848c.png" width="750">
   
 - Locations and timestamp of bare soil occurrence for any location on earth.
   
-  ![](images/BareSoilKenya.png)
+  <img src="https://user-images.githubusercontent.com/84096586/118026502-db0f1b80-b32e-11eb-95db-4cd3febca089.png" width="750">
   
 - Bare soil temporal frequency for any location on earth.
   
-  ![](images/BareSoilFrequencyKenya.png)
+  <img src="https://user-images.githubusercontent.com/84096586/118026577-efebaf00-b32e-11eb-8145-0f72f2ec5ad5.png" width="750">
   
 - A sustainability factor, ranging from ```[0,1]```, part of the RUSLE equation, and a function of bare soil frequency and fractional vegetation cover.
   It is a proxy of land management sustainability combining cover management and landscape management.
   
-  ![](images/SustainabilityFactorKenya.png)
+  <img src="https://user-images.githubusercontent.com/84096586/118026599-faa64400-b32e-11eb-96c6-b15eb6384eb3.png" width="750">
   
 ### Global Charts
 
@@ -160,15 +163,20 @@ Moreover, it provides the following global charts:
   (surfaces bare less at least once, and less than 95% of the time), 
   as it considers permanently vegetated surfaces (green slice) to be already sustainably managed, 
   and the surfaces bare more than 95% of the time as rocky outcrops or surfaces unrecoverable through restoration.
-  ![](images/TotalAreaProportions.png)
+  
+  <img src="https://user-images.githubusercontent.com/20474036/118030553-76a28b00-b333-11eb-8d83-18030765d2d9.png" width="750">
+  
 - The bare soil frequency distribution for the specified area, in the form of a histogram. 
   This provides information on what the most abundant frequency of bare soil exposure typically is for an area.
-  ![](images/BareSoilFrequencyDistribution.png)
+  
+  <img src="https://user-images.githubusercontent.com/20474036/118030499-64c0e800-b333-11eb-8ff3-3cda2de5674a.png" width="750">
+
 - The logarithmic distribution of the annual soil rates. Soil erosion rates are typically skewed towards the low values, 
   making the histogram difficult to interpret. Therefore, normalizing the distribution makes it easier to understand the situation for an area.
   A skewed distribution towards the higher values (0 and above) indicates more severe soil erosion, 
   while a skewed distribution towards the lower values indicates that the landscape is resilient towards soil erosion.
-  ![](images/AnnualSoilLossDistribution.png)
+
+  <img src="https://user-images.githubusercontent.com/20474036/118030314-1e6b8900-b333-11eb-8348-5a99835d5cbe.png" width="750">
   
 ### Drill-down drawing tool
 
@@ -177,7 +185,7 @@ and extract temporal information about the target location(s).
 
 ![](images/SoilErosionWatchDrawingTool.gif)
 
-![](images/DrawingToolPlot.png)
+<img src="https://user-images.githubusercontent.com/20474036/118030459-5246ae80-b333-11eb-8230-eb05bda4d86f.png" width="750">
 
 The green curve is the NDVI for the chosen year, corresponding to the drawn geometry.
 The brown dots are the dates where soil was observed bare in that year. 
