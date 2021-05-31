@@ -64,27 +64,33 @@ exports.factorK = function(state){
     // African soil properties and nutrients mapped at 30 m spatial resolution using two-scale ensemble machine learning
     // Scientific reports, 11(1), 1-18.
     function _highResInputs(){
-      var clay = ee.Image("users/soilwatch/clay_tot_psa_m_30m_0-20cm_2001-2017_africa_epsg4326_v0-1")
+      var clay = ee.Image("projects/sat-io/open-datasets/iSDAsoil_Africa_30m/clay_content")
+                 .select('b1')
                  .rename('clay');
 
-      var sand = ee.Image("users/soilwatch/sand_tot_psa_m_30m_0-20cm_2001-2017_africa_epsg4326_v0-1")
+      var sand = ee.Image("projects/sat-io/open-datasets/iSDAsoil_Africa_30m/sand_content")
+                 .select('b1')
                  .clamp(0, 20) // Cap the values to 20% sand, to represent very fine sand particles only
                  .rename('sand');
 
-      var silt = ee.Image("users/soilwatch/silt_tot_psa_m_30m_0-20cm_2001-2017_africa_epsg4326_v0-1")
+      var silt = ee.Image("projects/sat-io/open-datasets/iSDAsoil_Africa_30m/silt_content")
+                 .select('b1')
                  .clamp(0, 70) // Cap the values to 70% silt
                  .rename('silt');
-      var OM = ee.Image("users/soilwatch/oc_m_30m_0-20cm_2001-2017_africa_epsg4326_v0-1")
+
+      var OM = ee.Image("projects/sat-io/open-datasets/iSDAsoil_Africa_30m/carbon_organic")
+               .select('b1')
                .divide(10) // COnvert from dg to dag, to express the OM content in percentage
                .multiply(1.72) // Scaling factor from SOC to SOM, taken from Simons, G., Koster, R., & Droogers, P.
                                // (2020). HiHydroSoil v2. 0-High Resolution Soil Maps of Global Hydraulic Properties.
                .clamp(0, 4) // Cap values to 4% Organic Matter to avoid underestimation of erodibility in OM-rich soils
                .rename('OM');
 
-      var bulk_density = ee.Image("users/soilwatch/db_od_m_30m_0-20cm_2001-2017_africa_epsg4326_v0-1")
+      var bulk_density = ee.Image("projects/sat-io/open-datasets/iSDAsoil_Africa_30m/bulk_density")
+                         .select('b1')
                          .rename('bulk_density');
 
-      return clay.addBands(sand).addBands(silt).addBands(OM).addBands(bulk_density);
+      return clay.addBands(sand).addBands(silt).addBands(OM).addBands(bulk_density).unmask(0);
     }
 
     var africa_list = ee.List(
