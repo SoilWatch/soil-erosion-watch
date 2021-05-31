@@ -542,7 +542,7 @@ bs_freq = bs_freq.updateMask(bs_freq_mask);
 // This allows the display of an entire country like Kenya without having to compute the data on-the-fly
 var bs_image = ee.Image('users/soilwatch/KenyaBareSoilComposite2020');
 bs_image = bs_image.updateMask(bs_freq_mask);
-var median_image = ee.Image('users/WilliamOuellette/KenyaMedianComposite2020');
+var median_image = ee.Image('users/soilwatch/KenyaMedianComposite2020');
 var fcover_ts_smooth = ee.ImageCollection("users/soilwatch/KenyaFcover2020");
 
 // Compute the sustainability factor S = 1 / (V * L)
