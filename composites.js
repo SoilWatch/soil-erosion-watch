@@ -44,19 +44,20 @@ exports.extractTimeRanges = function(start, end, agg_interval){
     var start_date = ee.Date(start);
     var end_date = ee.Date(end);
 
-    var interval_no = start_date.difference(end_date, 'day').divide(agg_interval).round();
-    var month_check = ee.Number(30 / agg_interval).ceil();
+    // Number of intervals in the given "time_range" based on the specified "agg_interval" period
+    var interval_no = ee.Date(end).difference(ee.Date(start), 'day').divide(agg_interval).round();
+    var month_check = ee.Number(30.4375 / agg_interval).round(); // The number of aggregation intervals within a month
+
+    // Compute the relative date delta (in months) to add to each preceding period to compute the new one
     var rel_delta = ee.Number(end_date.difference(start_date, 'day'))
-                    .divide(ee.Number(30.5)
-                    .multiply(interval_no)).ceil();
-    end_date = start_date
-               .advance(start_date.advance(rel_delta, 'month')
-               .difference(start_date, 'day')
-               .divide(month_check), 'day');
+                    .divide(ee.Number(30.4375).multiply(interval_no)).ceil(); // 30.4375 days = average month length
+
+    // Compute the first time interval end date by adding the relative date delta (in months) to the start date
+    end_date = start_date.advance(start_date.advance(rel_delta, 'month')
+                                  .difference(start_date, 'day').divide(month_check), 'day');
 
     var time_intervals = ee.List([ee.List([start_date, end_date])]);
-    time_intervals = ee.List(ee.List.sequence(2,interval_no).iterate(function(x,previous){
-        x=ee.Number(x);
+    time_intervals = ee.List(ee.List.sequence(1, interval_no.subtract(1)).iterate(function(x,previous){
         start_date = ee.Date(ee.List(ee.List(previous).reverse().get(0)).get(1)); //end_date of last element
         end_date = start_date
                    .advance(start_date.advance(rel_delta, 'month')
@@ -77,11 +78,13 @@ exports.aggregateStack = function(masked_collection, band_list, time_interval, o
     var agg_type = options.agg_type || 'median';
 
     time_interval = ee.List(time_interval);
+    var agg_interval =  ee.Date(time_interval.get(1)).difference(time_interval.get(0), 'day');
+
     // Set the centre of the time interval as the system:time_start date
     var timestamp = {'system:time_start': ee.Date(time_interval.get(0))
-                                          .advance(ee.Number(agg_interval / 2).ceil(), 'day')
+                                          .advance(ee.Number(agg_interval.divide(2)).ceil(), 'day')
                                           .millis()};
-
+    var agg_image;
     if (agg_type === 'geomedian') {
         // Reduces the time interval using the geomedian, as it performs better for auto-correlated variables,
         //  i.e. spectral bands. See: Roberts, D., Mueller, N., & McIntyre, A. (2017).
@@ -89,7 +92,7 @@ exports.aggregateStack = function(masked_collection, band_list, time_interval, o
         // IEEE Transactions on Geoscience and Remote Sensing, 55(11), 6254-6264.
         // A condition is provided in case the time interval does not contain any cloud-free images,
         // which likely happens in the sub-tropics when a short aggregation interval is used.
-        var agg_image = ee.Algorithms.If(
+        agg_image = ee.Algorithms.If(
           masked_collection.filterDate(time_interval.get(0), time_interval.get(1)).size().gt(0),
                                        masked_collection.filterDate(time_interval.get(0), time_interval.get(1))
                                        .select(band_list)
@@ -100,7 +103,7 @@ exports.aggregateStack = function(masked_collection, band_list, time_interval, o
                                        .iterate(function(band, stack){return ee.Image(stack).addBands(ee.Image(0).mask())},
                                                 ee.Image(0).mask())).rename(band_list).set(timestamp));
     } else if (agg_type === 'median') {
-        var agg_image = ee.Algorithms.If(
+        agg_image = ee.Algorithms.If(
           masked_collection.filterDate(time_interval.get(0), time_interval.get(1)).size().gt(0),
                                        masked_collection.filterDate(time_interval.get(0), time_interval.get(1))
                                        .select(band_list)
@@ -110,7 +113,7 @@ exports.aggregateStack = function(masked_collection, band_list, time_interval, o
                                        .iterate(function(band, stack){return ee.Image(stack).addBands(ee.Image(0).mask())},
                                                 ee.Image(0).mask())).rename(band_list).set(timestamp));
     } else if (agg_type === 'max_band') {
-        var agg_image = ee.Algorithms.If(
+        agg_image = ee.Algorithms.If(
           masked_collection.filterDate(time_interval.get(0), time_interval.get(1)).size().gt(0),
                                        masked_collection.filterDate(time_interval.get(0), time_interval.get(1))
                                        .select(band_list)
