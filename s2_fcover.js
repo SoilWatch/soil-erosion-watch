@@ -131,7 +131,7 @@ function _neuron3(b03_norm, b04_norm, b05_norm, b06_norm, b07_norm, b8a_norm, b1
             .subtract(b8a_norm.multiply(2.0035261881))
             .add(b11_norm.multiply(0.0410357601757))
             .add(b12_norm.multiply(1.22373853174))
-            .add(view_zen_norm.multiply(-0.0124082778287))
+            .subtract(view_zen_norm.multiply(0.0124082778287))
             .subtract(sun_zen_norm.multiply(0.282223364524))
             .add(rel_az_norm.multiply(0.0994993117557))
             .add(1.02168965849);
