@@ -12,7 +12,7 @@ exports.harmonizedTS = function(masked_collection, band_list, time_intervals, op
 
   // a wrapper function for stacking the generated Sentinel-2 temporal aggregates
   function _stackBands(time_interval, stack){
-    var outputs = exports.aggregateStack(masked_collection, time_interval, band_list,
+    var outputs = exports.aggregateStack(masked_collection, band_list, time_interval,
                                          {agg_type: agg_type, band_name: band_name});
 
     return ee.List(stack).add(ee.Image(outputs).toInt16());
@@ -71,7 +71,7 @@ exports.extractTimeRanges = function(start, end, agg_interval){
 
 
 // Define function to generate the temporally-aggregated image for a given "time_interval"
-exports.aggregateStack = function(masked_collection, time_interval, band_list, options){
+exports.aggregateStack = function(masked_collection, band_list, time_interval, options){
 
     var band_name = options.band_name || 'NDVI';
     var agg_type = options.agg_type || 'median';
