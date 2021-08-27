@@ -2,7 +2,7 @@
 // ******* Module providing a set of Tools to draw shapes and extract statistics for the Soil Erosion App GUI ******* //
 // ****************************************************************************************************************** //
 
-var S2Composites = require('users/soilwatch/soilErosionApp:s2_composites.js');
+var composites = require('users/soilwatch/soilErosionApp:composites.js');
 var utils =  require('users/soilwatch/soilErosionApp:utils.js');
 
 // Function to initialize drawing tools, namely a control panel with widget, and the drawing options behind those
@@ -95,11 +95,11 @@ exports.initializeDrawingTools = function(){
 exports.preparePlotSeries = function(image_collection, bs_collection, geom, from_date, date_range, band_list){
 
   // Extracted Harmonized time series with 15 days interval, resulting in 24 composites in the span of a year.
-  var s2_ts = S2Composites.S2HarmonizedTS(image_collection, band_list, date_range, 15, geom); // cloud-masked timeseries
-  var s2_bsts = S2Composites.S2HarmonizedTS(bs_collection, band_list, date_range, 15, geom); // GEOS3 masked timeseries
+  var s2_ts = composites.harmonizedTS(image_collection, band_list, date_range, 15, geom); // cloud-masked timeseries
+  var s2_bsts = composites.harmonizedTS(bs_collection, band_list, date_range, 15, geom); // GEOS3 masked timeseries
 
   // Run a harmonic regression on the time series to fill missing data gaps and smoothen the NDVI profile.
-  var s2_ts_smooth = S2Composites.S2HarmonicRegression(s2_ts.select('fcover'), 'fcover', 4, geom)
+  var s2_ts_smooth = composites.harmonicRegression(s2_ts.select('fcover'), 'fcover', 4, geom)
                                                                  // clamping to data range,
                                                                  // as harmonic regression may shoot out of data range
                                                                  .map(function(img){return img.clamp(0, 1e4).toInt16()});
