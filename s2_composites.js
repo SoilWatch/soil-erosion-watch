@@ -91,9 +91,9 @@ exports.S2HarmonizedTS = function(masked_collection, band_list, time_range, agg_
   var stack = ee.List([]);
 
   // Populate the stack of sentinel-2 images with the specified bands/VIs
-  var geomedian_stack = ee.List(time_intervals).iterate(_stackBands, stack);
+  var agg_stack = ee.List(time_intervals).iterate(_stackBands, stack);
 
-  return ee.ImageCollection(ee.List(geomedian_stack)).sort('system:time_start')
+  return ee.ImageCollection(ee.List(agg_stack)).sort('system:time_start')
 };
 
 // Runs an harmonic regression through the Sentinel-2 time series provided
@@ -102,13 +102,13 @@ exports.S2HarmonizedTS = function(masked_collection, band_list, time_range, agg_
 // Use of MODIS EVI to map crop phenology, identify cropping systems,
 // detect land use change and drought risk in Ethiopia–an application of Google Earth Engine.
 // European Journal of Remote Sensing, 53(1), 176-191.
-exports.S2HarmonicRegression = function(s2_ts, band, harmonics, geom){
+exports.harmonicRegression = function(ts, band, harmonics, geom){
 
   // Define the number of cycles per year to model.
   // Make a list of harmonic frequencies to model.
   // These also serve as band name suffixes.
   var harmonic_frequencies = ee.List.sequence(1, harmonics);
-  var from_date = s2_ts.first().date();
+  var from_date = ts.first().date();
 
   // Function to get a sequence of band names for harmonic terms.
   function _constructBandNames(base, list) {
@@ -149,7 +149,7 @@ exports.S2HarmonicRegression = function(s2_ts, band, harmonics, geom){
     };
   }
 
-  var fourier_terms = s2_ts
+  var fourier_terms = ts
                       .filterBounds(geom).select(band)
                       .map(_addDependents)
                       .map(_addHarmonics(harmonic_frequencies));
