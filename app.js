@@ -305,7 +305,8 @@ function renderDateRange(date_range){
                           .select(['B2','B3','B4','B5','B6','B7','B8','B8A','B11','B12', 'fcover']);
 
   // Apply bare soil filter using the GEOS3 algorithm
-  var bs_collection = masked_collection.map(S2Masks.addGEOS3Mask);
+  var bs_collection = masked_collection.map(function(img){var geos3 = S2Masks.addGEOS3Mask(img);
+                                                          return img.updateMask(geos3)});
 
   // Set base date to generate a Day of Year layer
   var from_date = ee.Date.parse('YYYY-MM-dd', year + '-01-01');
@@ -673,7 +674,8 @@ function chartDefaultTimeSeries(){
                           .select(['B2','B3','B4','B5','B6','B7','B8','B8A','B11','B12', 'fcover']);
 
   // Apply bare soil filter using the GEOS3 algorithm
-  var bs_collection = masked_collection.map(S2Masks.addGEOS3Mask);
+  var bs_collection = masked_collection.map(function(img){var geos3 = S2Masks.addGEOS3Mask(img);
+                                                          return img.updateMask(geos3)});
 
   // Set base date to generate a Day of Year layer
   var from_date =  ee.Date.parse('YYYY-MM-dd', date_range_temp.get('start'));
