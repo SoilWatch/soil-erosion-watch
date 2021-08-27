@@ -9,7 +9,7 @@ var palettes = require('users/gena/packages:palettes');
 // Import local app dependencies
 var S2Masks = require('users/soilwatch/soilErosionApp:s2_masks.js');
 var S2FCover = require('users/soilwatch/soilErosionApp:s2_fcover.js');
-var S2Composites = require('users/soilwatch/soilErosionApp:s2_composites.js');
+var composites = require('users/soilwatch/soilErosionApp:composites.js');
 var legends = require('users/soilwatch/soilErosionApp:legends.js');
 var drawingTools = require('users/soilwatch/soilErosionApp:drawing_tools.js');
 var RUSLEFactors = require('users/soilwatch/soilErosionApp:RUSLE_factors.js');
@@ -322,9 +322,9 @@ function renderDateRange(date_range){
   //v_collection = v_collection.filterDate(date_range.get('start'), date_range.get('end'));
 
   // Generate harmonized monthly time series of FCover as input to the vegetation factor V
-  var fcover_ts = S2Composites.S2HarmonizedTS(masked_collection, band_list, date_range, 30, county.geometry());
+  var fcover_ts = composites.harmonizedTS(masked_collection, band_list, time_intervals, {agg_type: 'geomedian'});
   // Run a harmonic regression on the time series to fill missing data gaps and smoothen the NDVI profile.
-  var fcover_ts_smooth = S2Composites.S2HarmonicRegression(fcover_ts, 'fcover', 4, county.geometry())
+  var fcover_ts_smooth = composites.harmonicRegression(fcover_ts, 'fcover', 4, county.geometry())
                                                                  // clamping to [0,10000] data range,
                                                                  // as harmonic regression may shoot out of data range
                                                                  .map(function(img){return img.clamp(0, 1e4).toInt16()});
