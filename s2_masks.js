@@ -141,7 +141,5 @@ exports.addGEOS3Mask = function(img) {
               .bitwiseAnd(nbr2.gte(-0.3).bitwiseAnd(nbr2.lte(0.1)))
               .bitwiseAnd(vnsir.lte(0.9)).rename('GEOS3');
 
-  img = img.addBands(ndvi.rename('NDVI')); // Add NDVI as band
-
   return geos3 // Return bare soil pixel stack
 };
