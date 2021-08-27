@@ -321,6 +321,9 @@ function renderDateRange(date_range){
   bs_collection = bs_collection.filterDate(date_range.get('start'), date_range.get('end'));
   //v_collection = v_collection.filterDate(date_range.get('start'), date_range.get('end'));
 
+  // Generate a list of time intervals for which to generate a harmonized time series
+  var time_intervals = composites.extractTimeRanges(date_range.get('start'), date_range.get('end'), 30);
+
   // Generate harmonized monthly time series of FCover as input to the vegetation factor V
   var fcover_ts = composites.harmonizedTS(masked_collection, band_list, time_intervals, {agg_type: 'geomedian'});
   // Run a harmonic regression on the time series to fill missing data gaps and smoothen the NDVI profile.
