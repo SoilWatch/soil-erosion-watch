@@ -139,9 +139,9 @@ exports.addGEOS3Mask = function(img) {
   // GEOS3 equation
   var geos3 = ndvi.gte(-0.25).bitwiseAnd(ndvi.lte(0.25))
               .bitwiseAnd(nbr2.gte(-0.3).bitwiseAnd(nbr2.lte(0.1)))
-              .bitwiseAnd(vnsir.lte(0.9));
+              .bitwiseAnd(vnsir.lte(0.9)).rename('GEOS3');
 
   img = img.addBands(ndvi.rename('NDVI')); // Add NDVI as band
 
-  return img.updateMask(geos3) // Return bare soil pixel stack
+  return geos3 // Return bare soil pixel stack
 };
