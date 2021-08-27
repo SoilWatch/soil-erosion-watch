@@ -81,7 +81,7 @@ exports.S2HarmonizedTS = function(masked_collection, band_list, time_range, agg_
   function _stackBands(time_interval, stack){
     var outputs = _aggregateStack(time_interval);
 
-    return ee.List(stack).add(ee.Image(outputs).toInt16().clip(geom))
+    return ee.List(stack).add(ee.Image(outputs).toInt16());
   }
 
   // Generate equally spaced time intervals based on the AGG_interval specified.
