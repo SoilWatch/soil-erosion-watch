@@ -1,5 +1,5 @@
 // ****************************************************************************************************************** //
-// ************** Module compiling Sentinel-2 compositing and time series processing functionalities **************** //
+// ******************* Module compiling the compositing and time series processing functionalities ****************** //
 // ****************************************************************************************************************** //
 
 // A functioned to generate a harmonized time series from a Sentinel-2 Image Collection.
@@ -133,7 +133,7 @@ exports.aggregateStack = function(masked_collection, band_list, time_interval, o
 // Use of MODIS EVI to map crop phenology, identify cropping systems,
 // detect land use change and drought risk in Ethiopia–an application of Google Earth Engine.
 // European Journal of Remote Sensing, 53(1), 176-191.
-exports.harmonicRegression = function(ts, band, harmonics, geom){
+exports.harmonicRegression = function(ts, band, harmonics){
 
   // Define the number of cycles per year to model.
   // Make a list of harmonic frequencies to model.
@@ -181,7 +181,7 @@ exports.harmonicRegression = function(ts, band, harmonics, geom){
   }
 
   var fourier_terms = ts
-                      .filterBounds(geom).select(band)
+                      .select(band)
                       .map(_addDependents)
                       .map(_addHarmonics(harmonic_frequencies));
 
