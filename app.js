@@ -328,10 +328,10 @@ function renderDateRange(date_range){
   // Generate harmonized monthly time series of FCover as input to the vegetation factor V
   var fcover_ts = composites.harmonizedTS(masked_collection, band_list, time_intervals, {agg_type: 'geomedian'});
   // Run a harmonic regression on the time series to fill missing data gaps and smoothen the NDVI profile.
-  var fcover_ts_smooth = composites.harmonicRegression(fcover_ts, 'fcover', 4, county.geometry())
-                                                                 // clamping to [0,10000] data range,
-                                                                 // as harmonic regression may shoot out of data range
-                                                                 .map(function(img){return img.clamp(0, 1e4).toInt16()});
+  var fcover_ts_smooth = composites.harmonicRegression(fcover_ts, 'fcover', 4)
+                                   // clamping to [0,10000] data range,
+                                   // as harmonic regression may shoot out of data range
+                                   .map(function(img){return img.clamp(0, 1e4).toInt16()});
 
   // Calculate the bare soil frequency,
   // i.e. the number of bare soil observations divided by the number of cloud-free observations
