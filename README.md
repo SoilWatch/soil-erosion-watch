@@ -93,7 +93,7 @@ where `V = 1 / C` and `L = 1 / P`.
 
 Let's focus on the newly introduced erosion-controlling `V` (vegetation) and `L` (landscape) factors. 
 For an explanation on the erosion-inducing factors, and more background information on the equation, 
-this [blog post]() can be consulted.
+this [blog post](https://medium.com/soilwatch/soil-erosion-watch-a-bootstrapped-approach-to-identify-the-worlds-degrading-soils-21016f72f68d) can be consulted.
 
 ### Vegetation Factor V
 
