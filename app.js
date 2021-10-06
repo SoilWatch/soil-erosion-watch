@@ -36,9 +36,8 @@ var county = ee.FeatureCollection("FAO/GAUL/2015/level0")
 var K = RUSLEFactors.factorK('Kenya');
 var R = RUSLEFactors.factorR();
 
-// Import ALOS AW3D30 latest DEM version v3.2
-var dem = ee.ImageCollection("JAXA/ALOS/AW3D30/V3_2").select("DSM");
-dem = dem.mosaic().setDefaultProjection(dem.first().select(0).projection());
+// Import SRTM 30m DEM
+var dem = ee.Image("USGS/SRTMGL1_003");
 
 var slope_deg = ee.Terrain.slope(dem);
 var slope_rad = slope_deg.multiply(ee.Image(Math.PI).divide(180));
@@ -212,7 +211,7 @@ function _getPeriods(period){
 var add = ui.Button('Display Area of Interest');
 
 var blog_label = ui.Label({value: '❓ Medium ️Blog Post️', style: {fontWeight: 'bold'}})
-.setUrl('https://medium.com/@soilwatch/soil-erosion-watch-a-bootstrapped-approach-to-identify-the-worlds-degrading-soils-45babd656fee');
+.setUrl('https://medium.com/soilwatch/soil-erosion-watch-a-bootstrapped-approach-to-identify-the-worlds-degrading-soils-21016f72f68d');
 
 // Add all buttons to the panel
 var panel = ui.Panel([blog_label,
