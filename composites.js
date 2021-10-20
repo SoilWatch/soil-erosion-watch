@@ -126,6 +126,16 @@ exports.aggregateStack = function(masked_collection, band_list, time_interval, o
                                        ee.Image(ee.List(band_list.slice(1))
                                        .iterate(function(band, stack){return ee.Image(stack).addBands(ee.Image(0).mask())},
                                                 ee.Image(0).mask())).rename(band_list).set(timestamp));
+    } else if (agg_type === 'sum') {
+        agg_image = ee.Algorithms.If(
+          masked_collection.filterDate(time_interval.get(0), time_interval.get(1)).size().gt(0),
+                                       masked_collection.filterDate(time_interval.get(0), time_interval.get(1))
+                                       .select(band_list)
+                                       .unmask(0).sum()
+                                       .set(timestamp),
+                                       ee.Image(ee.List(band_list.slice(1))
+                                       .iterate(function(band, stack){return ee.Image(stack).addBands(ee.Image(0).mask())},
+                                                ee.Image(0).mask())).rename(band_list).set(timestamp));
         }
 
     return agg_image
