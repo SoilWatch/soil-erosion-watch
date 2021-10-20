@@ -131,7 +131,7 @@ exports.aggregateStack = function(masked_collection, band_list, time_interval, o
           masked_collection.filterDate(time_interval.get(0), time_interval.get(1)).size().gt(0),
                                        masked_collection.filterDate(time_interval.get(0), time_interval.get(1))
                                        .select(band_list)
-                                       .unmask(0).sum().selfMask()
+                                       .sum()
                                        .set(timestamp),
                                        ee.Image(ee.List(band_list.slice(1))
                                        .iterate(function(band, stack){return ee.Image(stack).addBands(ee.Image(0).mask())},
