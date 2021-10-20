@@ -54,15 +54,19 @@ exports.extractTimeRanges = function(start, end, agg_interval){
 
     // Compute the first time interval end date by adding the relative date delta (in months) to the start date
     end_date = start_date.advance(start_date.advance(rel_delta, 'month')
-                                  .difference(start_date, 'day').divide(month_check), 'day');
+                                  .difference(start_date, 'day')
+                                  .divide(month_check), 'day')
+                                  .advance(-1, 'second');
 
     var time_intervals = ee.List([ee.List([start_date, end_date])]);
     time_intervals = ee.List(ee.List.sequence(1, interval_no.subtract(1)).iterate(function(x,previous){
-        start_date = ee.Date(ee.List(ee.List(previous).reverse().get(0)).get(1)); //end_date of last element
+        start_date = ee.Date(ee.List(ee.List(previous).reverse().get(0)).get(1))
+                     .advance(1, 'second'); //end_date of last element
         end_date = start_date
                    .advance(start_date.advance(rel_delta, 'month')
                    .difference(start_date, 'day')
-                   .divide(month_check), 'day');
+                   .divide(month_check), 'day')
+                   .advance(-1, 'second');
 
         return ee.List(previous).add(ee.List([start_date, end_date]));
     }, time_intervals));
