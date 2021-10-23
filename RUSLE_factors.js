@@ -281,14 +281,17 @@ exports.factorS = function(median_image, bs_freq, fcover_ts, sr_band_scale){
           .divide(sr_band_scale).sqrt());
 
   // The monthly vegetation factor V, defined as per Karydas & Panagos, 2018,
-  // was computed for each month in the specified time interval and averaged for the time period.
+  // was computed for each month in the specified time interval and the integral was calculated over the time period.
   // Bare soil frequency data scaled and clamped to the range [5,8]
   // was used as proxy for the land use parameter, to simulate the range of conditions from
   // a degraded cropland (high bare soil frequency, 5) to a sustainably managed grassland (low bare soil frequency, 8).
-  var V = fcover_ts.map(function(fcover_img){
-    return ee.Image(1).subtract(bs_freq).multiply(10).clamp(5, 8).multiply(fcover_img.divide(sr_band_scale)).exp()
-  }).mean();
+  var fcover_arr = fcover_ts.toArray();
 
+  var Xk_m_Xkm1 = fcover_arr.arraySlice(0,1).subtract(fcover_arr.arraySlice(0,0,-1));
+  var AUC = Xk_m_Xkm1.arrayReduce('sum',[0]).abs().toArray()
+                     .arraySlice(0, 0, 1).arrayProject([0]).arrayFlatten([['array']]);
+
+  var V = ee.Image(1).subtract(bs_freq).multiply(10).clamp(5, 8).multiply(AUC.divide(sr_band_scale)).exp();
   // The final Sustainability Factor S = 1 / (V*L)
   var S = ee.Image(1).divide(L.multiply(V)).rename('sustainability_factor');
 
