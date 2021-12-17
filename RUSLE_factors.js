@@ -287,11 +287,11 @@ exports.factorS = function(median_image, bs_freq, fcover_ts, sr_band_scale){
   // a degraded cropland (high bare soil frequency, 5) to a sustainably managed grassland (low bare soil frequency, 8).
   var fcover_arr = fcover_ts.toArray();
 
-  var Xk_m_Xkm1 = fcover_arr.arraySlice(0,1).subtract(fcover_arr.arraySlice(0,0,-1));
-  var AUC = Xk_m_Xkm1.arrayReduce('sum',[0]).abs().toArray()
-                     .arraySlice(0, 0, 1).arrayProject([0]).arrayFlatten([['array']]);
+  var pw_mean = fcover_arr.arraySlice(0,1).add(fcover_arr.arraySlice(0,0,-1)).divide(2);
+  var fcover_integ = pw_mean.arrayReduce('mean',[0]).abs().toArray()
+                            .arraySlice(0, 0, 1).arrayProject([0]).arrayFlatten([['array']]);
 
-  var V = ee.Image(1).subtract(bs_freq).multiply(10).clamp(5, 8).multiply(AUC.divide(sr_band_scale)).exp();
+  var V = ee.Image(1).subtract(bs_freq).multiply(10).clamp(5, 8).multiply(fcover_integ.divide(sr_band_scale)).exp();
   // The final Sustainability Factor S = 1 / (V*L)
   var S = ee.Image(1).divide(L.multiply(V)).rename('sustainability_factor');
 
