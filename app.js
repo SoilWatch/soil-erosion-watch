@@ -297,10 +297,27 @@ function renderDateRange(date_range){
 
   // Perform cloud masking using the S2 cloud probabilities assets from s2cloudless,
   // courtesy of Sentinelhub/EU/Copernicus/ESA
-  var masked_collection = s2_cl
+  var masked_collection = s2_cl.filter(ee.Filter.notNull(['MEAN_INCIDENCE_AZIMUTH_ANGLE_B3',
+                                                          'MEAN_INCIDENCE_AZIMUTH_ANGLE_B4',
+                                                          'MEAN_INCIDENCE_AZIMUTH_ANGLE_B5',
+                                                          'MEAN_INCIDENCE_AZIMUTH_ANGLE_B6',
+                                                          'MEAN_INCIDENCE_AZIMUTH_ANGLE_B7',
+                                                          'MEAN_INCIDENCE_AZIMUTH_ANGLE_B8A',
+                                                          'MEAN_INCIDENCE_AZIMUTH_ANGLE_B11',
+                                                          'MEAN_INCIDENCE_AZIMUTH_ANGLE_B12',
+                                                          'MEAN_INCIDENCE_ZENITH_ANGLE_B3',
+                                                          'MEAN_INCIDENCE_ZENITH_ANGLE_B4',
+                                                          'MEAN_INCIDENCE_ZENITH_ANGLE_B5',
+                                                          'MEAN_INCIDENCE_ZENITH_ANGLE_B6',
+                                                          'MEAN_INCIDENCE_ZENITH_ANGLE_B7',
+                                                          'MEAN_INCIDENCE_ZENITH_ANGLE_B8A',
+                                                          'MEAN_INCIDENCE_ZENITH_ANGLE_B11',
+                                                          'MEAN_INCIDENCE_ZENITH_ANGLE_B12',
+                                                          'MEAN_SOLAR_AZIMUTH_ANGLE',
+                                                          'MEAN_SOLAR_ZENITH_ANGLE']))
                           .map(S2Masks.addCloudShadowMask(not_water, 1e4))
                           .map(S2Masks.applyCloudShadowMask)
-                          .map(S2FCover.fcover(1e4))
+                          .map(S2FCover.fcover(1e4)) // compute fcover, making sure above angle properties exist
                           .select(['B2','B3','B4','B5','B6','B7','B8','B8A','B11','B12', 'fcover']);
 
   // Apply bare soil filter using the GEOS3 algorithm
@@ -666,10 +683,27 @@ function chartDefaultTimeSeries(){
 
   // Perform cloud masking using the S2 cloud probabilities assets from s2cloudless,
   // courtesy of Sentinelhub/EU/Copernicus/ESA
-  var masked_collection = s2_cl
+  var masked_collection = s2_cl.filter(ee.Filter.notNull(['MEAN_INCIDENCE_AZIMUTH_ANGLE_B3',
+                                                          'MEAN_INCIDENCE_AZIMUTH_ANGLE_B4',
+                                                          'MEAN_INCIDENCE_AZIMUTH_ANGLE_B5',
+                                                          'MEAN_INCIDENCE_AZIMUTH_ANGLE_B6',
+                                                          'MEAN_INCIDENCE_AZIMUTH_ANGLE_B7',
+                                                          'MEAN_INCIDENCE_AZIMUTH_ANGLE_B8A',
+                                                          'MEAN_INCIDENCE_AZIMUTH_ANGLE_B11',
+                                                          'MEAN_INCIDENCE_AZIMUTH_ANGLE_B12',
+                                                          'MEAN_INCIDENCE_ZENITH_ANGLE_B3',
+                                                          'MEAN_INCIDENCE_ZENITH_ANGLE_B4',
+                                                          'MEAN_INCIDENCE_ZENITH_ANGLE_B5',
+                                                          'MEAN_INCIDENCE_ZENITH_ANGLE_B6',
+                                                          'MEAN_INCIDENCE_ZENITH_ANGLE_B7',
+                                                          'MEAN_INCIDENCE_ZENITH_ANGLE_B8A',
+                                                          'MEAN_INCIDENCE_ZENITH_ANGLE_B11',
+                                                          'MEAN_INCIDENCE_ZENITH_ANGLE_B12',
+                                                          'MEAN_SOLAR_AZIMUTH_ANGLE',
+                                                          'MEAN_SOLAR_ZENITH_ANGLE']))
                           .map(S2Masks.addCloudShadowMask(not_water, 1e4))
                           .map(S2Masks.applyCloudShadowMask)
-                          .map(S2FCover.fcover(1e4))
+                          .map(S2FCover.fcover(1e4)) // compute fcover, making sure above angle properties exist
                           .select(['B2','B3','B4','B5','B6','B7','B8','B8A','B11','B12', 'fcover']);
 
   // Apply bare soil filter using the GEOS3 algorithm
