@@ -125,7 +125,6 @@ function _stack (i1, i2)
   return ee.Image(i1).addBands(ee.Image(i2))
 }
 
-
 // Draw the time series plot from a set of input series corresponding to custom drawn geometries
 exports.drawPlot = function(img, plot_series, geom, year){
   // Extract the centroid of the geometry, so as to be able to assign lat/lon coordinates to drawn plots.
@@ -142,13 +141,16 @@ exports.drawPlot = function(img, plot_series, geom, year){
   Map.addLayer(ee.FeatureCollection([ee.Feature(geom, {})]).draw({color: '#FF0000', strokeWidth: 10}),{}, pt_title);
 
   // Get the crop signature from the reference data points using reduceRegion on the original NDVI time series
-  var y = plot_series[0].reduceRegion(ee.Reducer.mean(), geom, scale).values();
+  var y = plot_series[0].reduceRegion({reducer: ee.Reducer.mean(), geometry: geom, scale: scale,
+                                       maxPixels: 1e13, tileScale: 4}).values();
   // Fitted (harmonics) Time series
-  var y_bs = plot_series[1].reduceRegion(ee.Reducer.mean(), geom, scale).values()
+  var y_bs = plot_series[1].reduceRegion({reducer: ee.Reducer.mean(), geometry: geom, scale: scale,
+                                         maxPixels: 1e13, tileScale: 4}).values()
             // Convert null values to 11000, outside of the data range, so they do not show in the plot.
             .map(function(val){return ee.Number(ee.Algorithms.If(val, val, 11000))})//.slice(0, -1);
   // And the x-axis labels (day of year).
-  var x_labels = plot_series[2].reduceRegion(ee.Reducer.median(), geom, scale).values()//.slice(1);
+  var x_labels = plot_series[2].reduceRegion({reducer: ee.Reducer.median(), geometry: geom, scale: scale,
+                                              maxPixels: 1e13, tileScale: 4}).values()//.slice(1);
 
   // Generate the y-axis values
   var y_values = ee.Array.cat([y, y_bs], 1);
@@ -169,7 +171,8 @@ exports.drawPlot = function(img, plot_series, geom, year){
     });
 
   // Generate additional statistics using a mean reducer
-  var reduced_vals = ee.List(img.reduceRegion(ee.Reducer.mean(), geom, scale).values())
+  var reduced_vals = ee.List(img.reduceRegion({reducer: ee.Reducer.mean(), geometry: geom, scale: scale,
+                                               maxPixels: 1e13, tileScale: 4}).values())
                     // dirty trick to round to 3 numbers after decimal
                     .map(function(val){return ee.Number(val).multiply(1000).round().divide(1000)});
 
