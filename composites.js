@@ -100,7 +100,7 @@ exports.aggregateStack = function(masked_collection, band_list, time_interval, o
           masked_collection.filterDate(time_interval.get(0), time_interval.get(1)).size().gt(0),
                                        masked_collection.filterDate(time_interval.get(0), time_interval.get(1))
                                        .select(band_list)
-                                       .reduce(ee.Reducer.geometricMedian(band_list.length))
+                                       .reduce(ee.Reducer.geometricMedian(band_list.length), 4)
                                        .rename(band_list)
                                        .set(timestamp),
                                        ee.Image(ee.List(band_list.slice(1))
@@ -111,7 +111,8 @@ exports.aggregateStack = function(masked_collection, band_list, time_interval, o
           masked_collection.filterDate(time_interval.get(0), time_interval.get(1)).size().gt(0),
                                        masked_collection.filterDate(time_interval.get(0), time_interval.get(1))
                                        .select(band_list)
-                                       .median()
+                                       .reduce(ee.Reducer.median(), 4)
+                                       .rename(band_list)
                                        .set(timestamp),
                                        ee.Image(ee.List(band_list.slice(1))
                                        .iterate(function(band, stack){return ee.Image(stack).addBands(ee.Image(0).mask())},
@@ -131,7 +132,8 @@ exports.aggregateStack = function(masked_collection, band_list, time_interval, o
           masked_collection.filterDate(time_interval.get(0), time_interval.get(1)).size().gt(0),
                                        masked_collection.filterDate(time_interval.get(0), time_interval.get(1))
                                        .select(band_list)
-                                       .sum()
+                                       .reduce(ee.Reducer.sum(), 4)
+                                       .rename(band_list)
                                        .set(timestamp),
                                        ee.Image(ee.List(band_list.slice(1))
                                        .iterate(function(band, stack){return ee.Image(stack).addBands(ee.Image(0).mask())},
@@ -141,7 +143,8 @@ exports.aggregateStack = function(masked_collection, band_list, time_interval, o
           masked_collection.filterDate(time_interval.get(0), time_interval.get(1)).size().gt(0),
                                        masked_collection.filterDate(time_interval.get(0), time_interval.get(1))
                                        .select(band_list)
-                                       .count()
+                                       .reduce(ee.Reducer.count(), 4)
+                                       .rename(band_list)
                                        .set(timestamp),
                                        ee.Image(ee.List(band_list.slice(1))
                                        .iterate(function(band, stack){return ee.Image(stack).addBands(ee.Image(0).mask())},
