@@ -37,7 +37,10 @@ var K = RUSLEFactors.factorK('Kenya');
 var R = RUSLEFactors.factorR();
 
 // Import SRTM 30m DEM
-var dem = ee.Image("USGS/SRTMGL1_003");
+//var dem = ee.Image("USGS/SRTMGL1_003");
+// Import FABDEM from Hawker, Laurence, Peter Uhe, Luntadila Paulo, Jeison Sosa, James Savage, Christopher Sampson, and
+// Jeffrey Neal. "A 30m global map of elevation with forests and buildings removed."Environmental Research Letters(2022)
+var dem = ee.ImageCollection("projects/sat-io/open-datasets/FABDEM").mosaic();
 
 var slope_deg = ee.Terrain.slope(dem);
 var slope_rad = slope_deg.multiply(ee.Image(Math.PI).divide(180));
@@ -656,7 +659,7 @@ panel.add(A_hist.setChartType('ColumnChart'));
 // The mean value for the Kenya data was computed offline to speed up its recovery, and corresponds to 3.251 t.ha-1.yr-1
 var A_mean_label = ui.Label("Mean Annual Soil Loss Rate in soil-exposed croplands and grasslands for Kenya:",
                             {fontWeight: 'bold'});
-var A_mean_result  = ui.Label("3.251 t.ha-1.year-1");
+var A_mean_result  = ui.Label("0.527 t.ha-1.year-1");
 panel.add(A_mean_label);
 panel.add(A_mean_result);
 
