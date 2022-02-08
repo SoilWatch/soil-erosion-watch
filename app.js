@@ -595,7 +595,7 @@ var S_palette = palettes.colorbrewer.RdYlGn[11].reverse().slice(2, -1);
 // Visualization parameters for the respective layers
 var viz = {min: 0, max:100, palette: bs_freq_palette};
 var viz_S = {min: 0, max:1, palette: S_palette};
-var viz_A = {min: 0, max: 15, palette: A_palette};
+var viz_A = {min: 0, max: 5, palette: A_palette};
 
 // set position of panel
 var legend = ui.Panel({
