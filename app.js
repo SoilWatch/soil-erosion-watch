@@ -535,13 +535,15 @@ function renderDateRange(date_range){
     cloudOptimized: true
     }
   });
-
-  // An alternative procedure to export a jpeg through a download URL.
-  // Only good for a thumbnail export, due to the limited allowed export size.
-  /*
-  var DownloadPanel = utils.downloadImg(A, adm2_name);
-  panel.add(DownloadPanel);
   */
+
+  // A procedure to export a geotiff download URL.
+  // This may result in a downsampling of the native resolution from 10m to a lower resolution
+  var label_A = ui.Label('Download factor A', {shown: false});
+  var label_S = ui.Label('Download factor S', {shown: false});
+  var label_BSf = ui.Label('Download Bare Soil %', {shown: false});
+  var label_rgb = ui.Label('Download RGB', {shown: false});
+  Map.add(downloadPanel);
 }
 
 // Calculate the bare soil frequency,
@@ -668,6 +670,57 @@ panel.add(A_mean_result);
 // Insert a disclaimer to try something different if Time-outs are encountered
 panel.add(ui.Label("Disclaimer:", {fontWeight: 'bold'}));
 panel.add(ui.Label('If an error is encountered when plotting the charts, try a shorter aggregation interval or a smaller sub-administrative unit'));
+
+// Define a function to generate a download URL of the image for the
+// viewport region.
+var downloadButton = function(){
+  var viewBounds = ee.Geometry.Rectangle(Map.getBounds());
+  var downloadArgs = {
+    name: 'ee_image',
+    //dimensions: [1920, 1080],
+    scale: ee.Number(Map.getScale()).getInfo(),
+    crs: 'EPSG:4326',
+    format: 'GEO_TIFF',
+    //scale: export_dict[key][1],
+    region: viewBounds.toGeoJSONString()
+  };
+
+  var download_A = ee.Image(Map.layers().get(4).getEeObject());
+  var download_S = ee.Image(Map.layers().get(3).getEeObject());
+  var download_BSf = ee.Image(Map.layers().get(2).getEeObject());
+  var download_rgb = ee.Image(Map.layers().get(1).getEeObject());
+
+  var layer_A_visParams = Map.layers().get(4).getVisParams();
+  var layer_S_visParams = Map.layers().get(3).getVisParams();
+  var layer_BSf_visParams = Map.layers().get(2).getVisParams();
+  var layer_rgb_visParams = Map.layers().get(1).getVisParams();
+
+  var url_A = download_A.visualize(layer_A_visParams).getDownloadURL(downloadArgs);
+  var url_S = download_S.visualize(layer_S_visParams).getDownloadURL(downloadArgs);
+  var url_BSf = download_BSf.visualize(layer_BSf_visParams).getDownloadURL(downloadArgs);
+  var url_rgb = download_rgb.visualize(layer_rgb_visParams).getDownloadURL(downloadArgs);
+
+  label_A.setUrl(url_A);
+  label_S.setUrl(url_S);
+  label_BSf.setUrl(url_BSf);
+  label_rgb.setUrl(url_rgb);
+
+  label_A.style().set({shown: true});
+  label_S.style().set({shown: true});
+  label_BSf.style().set({shown: true});
+  label_rgb.style().set({shown: true});
+}
+
+// A procedure to export a geotiff download URL.
+// This may result in a downsampling of the native resolution from 10m to a lower resolution
+var download_button = ui.Button('Download viewport', downloadButton);
+var label_A = ui.Label('Download factor A', {shown: false});
+var label_S = ui.Label('Download factor S', {shown: false});
+var label_BSf = ui.Label('Download Bare Soil %', {shown: false});
+var label_rgb = ui.Label('Download RGB', {shown: false});
+var downloadPanel = ui.Panel({widgets: [download_button, label_A, label_S, label_BSf, label_rgb],
+                              style: {position: 'top-right'}});
+Map.add(downloadPanel);
 
 var date_range_temp = ee.Dictionary({'start': '2020-01-01', 'end': '2020-12-31'});
 
