@@ -1,1 +1,14 @@
-
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+authors:
+- family-names: "Ouellette"
+  given-names: "William"
+  orcid: 
+- family-names:
+  given-names:
+  orcid: 
+title: "Soil Erosion Watch RUSLE"
+version: 1.0.0
+doi:
+date-released: 2021-05-28
+url: "https://github.com/SoilWatch/soil-erosion-watch"
