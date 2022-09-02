@@ -46,7 +46,7 @@ exports.extractTimeRanges = function(start, end, agg_interval){
 
     // Number of intervals in the given "time_range" based on the specified "agg_interval" period
     var interval_no = ee.Date(end).difference(ee.Date(start), 'day').divide(agg_interval).round();
-    var month_check = ee.Number(30.4375 / agg_interval).round(); // The number of aggregation intervals within a month
+    var month_check = ee.Number(30.4375 / agg_interval).ceil(); // The number of aggregation intervals within a month
 
     // Compute the relative date delta (in months) to add to each preceding period to compute the new one
     var rel_delta = ee.Number(end_date.difference(start_date, 'day'))
