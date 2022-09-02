@@ -15,7 +15,7 @@ exports.harmonizedTS = function(masked_collection, band_list, time_intervals, op
     var outputs = exports.aggregateStack(masked_collection, band_list, time_interval,
                                          {agg_type: agg_type, band_name: band_name});
 
-    return ee.List(stack).add(ee.Image(outputs).toInt16());
+    return ee.List(stack).add(ee.Image(outputs));
   }
 
   // Initialize the list of Sentinel_2 images.
