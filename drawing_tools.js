@@ -98,9 +98,9 @@ exports.preparePlotSeries = function(image_collection, bs_collection, geom, from
 
   // Extracted Harmonized time series with 15 days interval, resulting in 24 composites in the span of a year.
   var s2_ts = composites.harmonizedTS(image_collection, band_list, time_intervals, {agg_type: 'geomedian'})
-                        .map(function(img){return img.clip(geom)}); // cloud-masked timeseries
+                        .map(function(img){return img.toInt16().clip(geom)}); // cloud-masked timeseries
   var s2_bsts = composites.harmonizedTS(bs_collection, band_list, time_intervals, {agg_type: 'geomedian'})
-                          .map(function(img){return img.clip(geom)}); // GEOS3 masked timeseries
+                          .map(function(img){return img.toInt16().clip(geom)}); // GEOS3 masked timeseries
 
   // Run a harmonic regression on the time series to fill missing data gaps and smoothen the NDVI profile.
   var s2_ts_smooth = composites.harmonicRegression(s2_ts.select('fcover'), 'fcover', 4)
