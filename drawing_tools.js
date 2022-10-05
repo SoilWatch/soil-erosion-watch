@@ -1,4 +1,4 @@
-// ****************************************************************************************************************** //
+/ ****************************************************************************************************************** //
 // ******* Module providing a set of Tools to draw shapes and extract statistics for the Soil Erosion App GUI ******* //
 // ****************************************************************************************************************** //
 
@@ -8,7 +8,9 @@ var utils =  require('users/soilwatch/soilErosionApp:utils.js');
 // Function to initialize drawing tools, namely a control panel with widget, and the drawing options behind those
 // Courtesy of Justin Braaten and his great tutorial(s):
 // https://developers.google.com/earth-engine/tutorials/community/drawing-tools-region-reduction
-exports.initializeDrawingTools = function(){
+exports.initializeDrawingTools = function(options){
+
+  var map_name = options.map_name || Map;
 
   function clearGeometry() {
     var layers = drawingTools.layers();
@@ -73,7 +75,7 @@ exports.initializeDrawingTools = function(){
   });
 
   // Hide default drawing tool, so we can display a customized version
-  var drawingTools = Map.drawingTools();
+  var drawingTools = map_name.drawingTools();
   drawingTools.setShown(false);
 
   // Clear all existing geometries that have been added as imports from drawing tools
@@ -126,19 +128,22 @@ function _stack (i1, i2)
 }
 
 // Draw the time series plot from a set of input series corresponding to custom drawn geometries
-exports.drawPlot = function(img, plot_series, geom, year){
+exports.drawPlot = function(img, plot_series, geom, year, options){
+  
+  var map_name = options.map_name || Map;
+
   // Extract the centroid of the geometry, so as to be able to assign lat/lon coordinates to drawn plots.
   var pt = geom.centroid(0.001);
 
   // Reduction scale is based on map scale to avoid memory/timeout errors.
-  var map_scale = Map.getScale();
+  var map_scale = map_name.getScale();
   var scale = map_scale > 100 ? 100 : 10;
 
   // Generate plot title
   var pt_title = year + ', centroid coordinates (lon/lat): '
                   + ee.Number(pt.coordinates().get(0)).multiply(1e6).round().divide(1e6).getInfo() + ', '
                   + ee.Number(pt.coordinates().get(1)).multiply(1e6).round().divide(1e6).getInfo();
-  Map.addLayer(ee.FeatureCollection([ee.Feature(geom, {})]).draw({color: '#FF0000', strokeWidth: 10}),{}, pt_title);
+  map_name.addLayer(ee.FeatureCollection([ee.Feature(geom, {})]).draw({color: '#FF0000', strokeWidth: 10}),{}, pt_title);
 
   // Get the crop signature from the reference data points using reduceRegion on the original NDVI time series
   var y = plot_series[0].reduceRegion({reducer: ee.Reducer.mean(), geometry: geom, scale: scale,
