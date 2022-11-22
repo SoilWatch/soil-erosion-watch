@@ -401,7 +401,7 @@ function renderDateRange(date_range){
          .rename('soil_erosion_hazard');
 
   // Initiate drawing tools functionalities
-  var drawing_elements2 =  drawingTools.initializeDrawingTools();
+  var drawing_elements2 =  drawingTools.initializeDrawingTools({map_name: Map});
   var drawing_tools2 = drawing_elements2[0];
   var control_panel2 = drawing_elements2[1];
   drawing_tools.clear(); // Clean out previous drawing tools for the default Kenya inputs.
@@ -425,7 +425,7 @@ function renderDateRange(date_range){
                         .addBands(bs_freq.multiply(100))
                         .addBands(A)
                         .updateMask(bs_freq.gt(0));
-      var red_outputs = drawingTools.drawPlot(input_image, plot_series, aoi, year);
+      var red_outputs = drawingTools.drawPlot(input_image, plot_series, aoi, year, {map_name: Map});
 
       var slope_label = ui.Label(); // Mean Slope Steepness in %
       var bs_freq_label = ui.Label(); // Mean Bare Soil Frequency in %
@@ -536,7 +536,7 @@ function renderDateRange(date_range){
     }
   });
   */
-
+  
   // A procedure to export a geotiff download URL.
   // This may result in a downsampling of the native resolution from 10m to a lower resolution
   var label_A = ui.Label('Download factor A', {shown: false});
@@ -626,7 +626,7 @@ Map.centerObject(county.geometry(), 7);
 Map.layers().reset([county_layer, bs_image_layer, bs_freq_layer, S_layer, A_layer]);
 
 // Initiate drawing tools functionalities
-var drawing_elements =  drawingTools.initializeDrawingTools();
+var drawing_elements =  drawingTools.initializeDrawingTools({map_name: Map});
 var drawing_tools = drawing_elements[0];
 var control_panel = drawing_elements[1];
 
@@ -684,7 +684,7 @@ var downloadButton = function(){
     //scale: export_dict[key][1],
     region: viewBounds.toGeoJSONString()
   };
-
+  
   var download_A = ee.Image(Map.layers().get(4).getEeObject());
   var download_S = ee.Image(Map.layers().get(3).getEeObject());
   var download_BSf = ee.Image(Map.layers().get(2).getEeObject());
@@ -694,7 +694,7 @@ var downloadButton = function(){
   var layer_S_visParams = Map.layers().get(3).getVisParams();
   var layer_BSf_visParams = Map.layers().get(2).getVisParams();
   var layer_rgb_visParams = Map.layers().get(1).getVisParams();
-
+  
   var url_A = download_A.visualize(layer_A_visParams).getDownloadURL(downloadArgs);
   var url_S = download_S.visualize(layer_S_visParams).getDownloadURL(downloadArgs);
   var url_BSf = download_BSf.visualize(layer_BSf_visParams).getDownloadURL(downloadArgs);
@@ -718,7 +718,7 @@ var label_A = ui.Label('Download factor A', {shown: false});
 var label_S = ui.Label('Download factor S', {shown: false});
 var label_BSf = ui.Label('Download Bare Soil %', {shown: false});
 var label_rgb = ui.Label('Download RGB', {shown: false});
-var downloadPanel = ui.Panel({widgets: [download_button, label_A, label_S, label_BSf, label_rgb],
+var downloadPanel = ui.Panel({widgets: [download_button, label_A, label_S, label_BSf, label_rgb], 
                               style: {position: 'top-right'}});
 Map.add(downloadPanel);
 
@@ -785,7 +785,7 @@ function chartDefaultTimeSeries(){
                     .addBands(bs_freq.multiply(100))
                     .addBands(A)
                     .updateMask(bs_freq.gt(0));
-  var red_outputs = drawingTools.drawPlot(input_image, plot_series, aoi, '2020');
+  var red_outputs = drawingTools.drawPlot(input_image, plot_series, aoi, '2020', {map_name: Map});
 
   var slope_label = ui.Label(); // Mean Slope Steepness in %
   var bs_freq_label = ui.Label(); // Mean Bare Soil Frequency in %
@@ -812,3 +812,4 @@ var button_widgets = [elems.get(0), elems.get(1), elems.get(2), elems.get(3), el
 
 // Stashing Disclaimer Labels to carry over when onClick event occurs
 var disclaimer_widgets = [elems.get(13), elems.get(14)];
+
