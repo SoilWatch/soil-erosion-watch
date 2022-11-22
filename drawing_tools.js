@@ -144,35 +144,45 @@ exports.drawPlot = function(img, plot_series, geom, year, options){
                   + ee.Number(pt.coordinates().get(0)).multiply(1e6).round().divide(1e6).getInfo() + ', '
                   + ee.Number(pt.coordinates().get(1)).multiply(1e6).round().divide(1e6).getInfo();
   map_name.addLayer(ee.FeatureCollection([ee.Feature(geom, {})]).draw({color: '#FF0000', strokeWidth: 10}),{}, pt_title);
+  
+  var plot_colors = ['e41a1c', '377eb8', '4daf4a', '984ea3', 'ff7f00', 'ffff33', 'a65628', 'f781bf', '999999'];
 
-  // Get the crop signature from the reference data points using reduceRegion on the original NDVI time series
-  var y = plot_series[0].reduceRegion({reducer: ee.Reducer.mean(), geometry: geom, scale: scale,
-                                       maxPixels: 1e13, tileScale: 4}).values();
+  var y_list = ee.List([]);
+  var y_legend = ee.List([]);
+  var y_series = {};
+  for (var i = 0; i <= plot_series.length-3; i++){
+    // Get the crop signature from the reference data points using reduceRegion on the original NDVI time series
+    var y = plot_series[i].reduceRegion({reducer: ee.Reducer.mean(), geometry: geom, scale: scale,
+                                           maxPixels: 1e13, tileScale: 4}).values();
+    y_list = y_list.add(y);
+    y_legend = y_legend.add('FCover_smoothened_'+i);
+    y_series[i] = {lineWidth: 2, pointSize: 0, color: plot_colors[i]};
+  }
+  y_series[plot_series.length-2] = {lineWidth: 0, pointSize: 5, color: 'brown' };
+
   // Fitted (harmonics) Time series
-  var y_bs = plot_series[1].reduceRegion({reducer: ee.Reducer.mean(), geometry: geom, scale: scale,
-                                         maxPixels: 1e13, tileScale: 4}).values()
-            // Convert null values to 11000, outside of the data range, so they do not show in the plot.
-            .map(function(val){return ee.Number(ee.Algorithms.If(val, val, 11000))})//.slice(0, -1);
+  var y_bs = plot_series[plot_series.length-2].reduceRegion({reducer: ee.Reducer.mean(), geometry: geom, scale: scale,
+                                                             maxPixels: 1e13, tileScale: 4}).values()
+             // Convert null values to 11000, outside of the data range, so they do not show in the plot.
+             .map(function(val){return ee.Number(ee.Algorithms.If(val, val, 11000))})//.slice(0, -1);
   // And the x-axis labels (day of year).
-  var x_labels = plot_series[2].reduceRegion({reducer: ee.Reducer.median(), geometry: geom, scale: scale,
-                                              maxPixels: 1e13, tileScale: 4}).values()//.slice(1);
+  var x_labels = plot_series[plot_series.length-1].reduceRegion({reducer: ee.Reducer.median(), geometry: geom, scale: scale,
+                                                                 maxPixels: 1e13, tileScale: 4}).values()//.slice(1);
 
   // Generate the y-axis values
-  var y_values = ee.Array.cat([y, y_bs], 1);
-
+  var y_values = ee.Array(y_list.add(y_bs)).transpose();
+  
+  y_legend = y_legend.add('bare_soil_observed');
   // Plot chart
   var chart = ui.Chart.array.values(y_values, 0, x_labels)
-  .setSeriesNames(['FCover_smoothened', 'bare_soil_observed'])
+  .setSeriesNames(y_legend)
   .setOptions(
     {
       title: pt_title,
       hAxis: {title: 'Day of Year', viewWindow: {min: 0, max: 365}},
       vAxis: {title: 'FCover', viewWindow: {min: 0, max: 10000}},
       legend: null,
-      series: {
-        0: {lineWidth: 2, pointSize: 0, color: 'green' },
-        1: {lineWidth: 0, pointSize: 5, color: 'brown' }
-      }
+      series: y_series
     });
 
   // Generate additional statistics using a mean reducer
