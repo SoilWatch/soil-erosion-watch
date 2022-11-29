@@ -25,6 +25,11 @@ exports.fcover = function(sr_band_scale) {
                             .add(ee.Number(img.get('MEAN_INCIDENCE_AZIMUTH_ANGLE_B11')))
                             .add(ee.Number(img.get('MEAN_INCIDENCE_AZIMUTH_ANGLE_B12')))
                             .divide(8);
+                            
+    mean_incidence_az = ee.Number(ee.Algorithms.If(mean_incidence_az, 
+                                                   mean_incidence_az,
+                                                   ee.Number(102.5)));
+                                         
     var mean_incidence_zen = ee.Number(img.get('MEAN_INCIDENCE_ZENITH_ANGLE_B3'))
                              .add(ee.Number(img.get('MEAN_INCIDENCE_ZENITH_ANGLE_B4')))
                              .add(ee.Number(img.get('MEAN_INCIDENCE_ZENITH_ANGLE_B5')))
@@ -35,6 +40,10 @@ exports.fcover = function(sr_band_scale) {
                              .add(ee.Number(img.get('MEAN_INCIDENCE_ZENITH_ANGLE_B12')))
                              .divide(8);
 
+    mean_incidence_zen = ee.Number(ee.Algorithms.If(mean_incidence_zen, 
+                                                    mean_incidence_zen,
+                                                    ee.Number(10.4)));
+                                         
     // rescale data range if necessary
     var img_rs = img.divide(sr_band_scale);
 
@@ -205,3 +214,4 @@ function _denormalize(normalized, min, max) {
 function _tansig(input) {
   return ee.Image(2).divide(ee.Image(1).add(input.multiply(-2).exp())).subtract(1);
 }
+
