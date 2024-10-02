@@ -45,7 +45,6 @@ exports.factorK = function(state){
            .divide(100) // COnvert from dg to dag, to express the OM content in percentage
            .multiply(1.72) // Scaling factor from SOC to SOM, taken from Simons, G., Koster, R., & Droogers, P. (2020).
                             // HiHydroSoil v2. 0-High Resolution Soil Maps of Global Hydraulic Properties.
-           .clamp(0, 4) // Cap values to 4% Organic Matter to avoid underestimation of soil erodibility in OM-rich soils
            .rename('OM');
 
       var bulk_density = ee.Image("projects/soilgrids-isric/bdod_mean");
@@ -83,7 +82,6 @@ exports.factorK = function(state){
                .divide(10) // COnvert from dg to dag, to express the OM content in percentage
                .multiply(1.72) // Scaling factor from SOC to SOM, taken from Simons, G., Koster, R., & Droogers, P.
                                // (2020). HiHydroSoil v2. 0-High Resolution Soil Maps of Global Hydraulic Properties.
-               .clamp(0, 4) // Cap values to 4% Organic Matter to avoid underestimation of erodibility in OM-rich soils
                .rename('OM');
 
       var bulk_density = ee.Image("projects/sat-io/open-datasets/iSDAsoil_Africa_30m/bulk_density")
@@ -194,7 +192,9 @@ exports.factorK = function(state){
     var M = sand.add(silt).multiply(ee.Image(100).subtract(clay)).rename('M'); // Textural factor M
 
     // Soil Erodibility factor K final equation
-    var K = ee.Image(2.1).multiply(1e-4).multiply(M.pow(1.14)).multiply(ee.Image(12).subtract(OM))
+    var K = ee.Image(2.1).multiply(1e-4).multiply(M.pow(1.14))
+            // Cap values to 4% Organic Matter to avoid underestimation of soil erodibility in OM-rich soils
+            .multiply(ee.Image(12).subtract(OM.clamp(0, 4)))
             .add(ee.Image(3.25).multiply(structure_class.subtract(2)))
             .add(ee.Image(2.5).multiply(permeability_class.subtract(3)))
             .divide(100)
